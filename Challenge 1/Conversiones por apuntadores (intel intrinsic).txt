@@ -1,0 +1,32 @@
+			
+CONVERSION PARA UTILIZAR INSTRUCCIONES __m256/__m256i/__m256d INDIFERENTEMENTE
+
+			__m256i t0, *jjj;
+			void *xxx;
+			
+			xxx = &t0;
+			__m256 * bbb;
+			bbb = (__m256*)xxx;
+
+			jjj = &tmask_v1;
+			__m256 * yyy;
+			yyy = (__m256*)jjj;
+
+			__m256 xyz = _mm256_and_ps(*(bbb), *(yyy));
+
+			yyy = &xyz;
+			__m256i *tp = (__m256i*)yyy;
+
+
+			t0 = *(tp);
+
+
+///////////////////////////////////////////////////
+__m256 xyz = _mm256_and_ps(*((__m256*)&t0), *((__m256*)&tmask_v1));
+		   t0 = *((__m256i*)&xyz);
+//////////////////////////////////////////////////////
+
+
+MANERA RESUMIDA
+
+			t0 = *((__m256i*)&_mm256_and_ps(*(__m256*)&t0, *(__m256*)&tmask_v1)); hahahhahahaahahahaah

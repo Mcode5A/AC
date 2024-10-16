@@ -1,0 +1,23 @@
+#!/bin/bash -l              
+#SBATCH --partition=cuda.q  
+#SBATCH -w aolin24 
+#SBATCH --exclusive    
+
+# print information for documentation
+echo "Compile" $1 "for CPU execution with gcc -O1 version 8.2 in file" $2".O1"
+
+# install gcc compiler version 8.2
+module load gcc/8.2.0
+echo
+
+# compile for CPU with optimization level 1
+gcc -O1 -lm $1 -o ${2}.O1
+
+# execute and measure total time and general performance counters
+perf stat ${2}.O1
+echo
+
+# execute and generate performance profiling file (perf.stat)
+perf record ${2}.O1
+
+# after remote execution, use the command "perf report" to visualize results
