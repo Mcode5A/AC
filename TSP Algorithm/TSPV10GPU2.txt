@@ -1,0 +1,147 @@
+Identify node & Install PGI compiler
+aolin24.uab.es
+Currently Loaded Modulefiles:
+  1) modules     2) gcc/9.2.0   3) pgi/20.7    4) cuda/9.0
+Currently Loaded Modulefiles:
+  1) modules     2) gcc/9.2.0   3) pgi/20.7    4) cuda/9.0
+Compiling code
+main:
+    387, Generating copyin(distances[:][:]) [if not already present]
+    399, Generating implicit copy(dist) [if not already present]
+         Generating implicit copyin(Population[k]) [if not already present]
+    401, Loop is parallelizable
+         Generating Tesla code
+        401, #pragma acc loop gang, vector(128) /* blockIdx.x threadIdx.x */
+             Generating implicit reduction(+:dist)
+Execute & measure with perf
+Failing in Thread:1
+Find shortest path for 250 cities. 5 Epochs. Population Size: 40000
+call to cuStreamSynchronize returned error 700: Illegal address during kernel execution
+
+
+ Performance counter stats for './v11GPU 5':
+
+            382,31 msec task-clock                #    0,869 CPUs utilized          
+                71      context-switches          #    0,186 K/sec                  
+                10      cpu-migrations            #    0,026 K/sec                  
+             5.549      page-faults               #    0,015 M/sec                  
+       834.592.451      cycles                    #    2,183 GHz                    
+       483.329.316      stalled-cycles-frontend   #   57,91% frontend cycles idle   
+       757.187.465      instructions              #    0,91  insn per cycle         
+                                                  #    0,64  stalled cycles per insn
+       138.750.328      branches                  #  362,929 M/sec                  
+         1.751.383      branch-misses             #    1,26% of all branches        
+
+       0,439727491 seconds time elapsed
+
+       0,107587000 seconds user
+       0,277089000 seconds sys
+
+
+
+Profile with nvprof: summary (100 iterations), trace (10 iterations), perf. metrics (1 iteration)
+==16588== NVPROF is profiling process 16588, command: ./v11GPU 5
+Failing in Thread:1
+Find shortest path for 250 cities. 5 Epochs. Population Size: 40000
+call to cuStreamSynchronize returned error 700: Illegal address during kernel execution
+
+==16588== Profiling application: ./v11GPU 5
+==16588== Warning: Found 2 invalid records in the result.
+==16588== Warning: This can happen if device ran out of memory or if a device kernel was stopped due to an assertion.
+==16588== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   95.21%  43.862us         2  21.931us  19.294us  24.568us  [CUDA memcpy HtoD]
+                    4.79%  2.2080us         1  2.2080us  2.2080us  2.2080us  [CUDA memset]
+      API calls:   83.36%  205.71ms         1  205.71ms  205.71ms  205.71ms  cuDevicePrimaryCtxRetain
+                   10.67%  26.321ms         1  26.321ms  26.321ms  26.321ms  cuMemHostAlloc
+                    4.42%  10.896ms         3  3.6320ms  8.1630us  10.878ms  cuStreamSynchronize
+                    0.79%  1.9416ms         5  388.31us  7.1090us  550.57us  cuMemAlloc
+                    0.57%  1.4129ms         1  1.4129ms  1.4129ms  1.4129ms  cuMemAllocHost
+                    0.09%  234.04us         1  234.04us  234.04us  234.04us  cuModuleLoadDataEx
+                    0.03%  74.469us         2  37.234us  29.830us  44.639us  cuMemcpyHtoDAsync
+                    0.03%  65.214us         2  32.607us  15.088us  50.126us  cuLaunchKernel
+                    0.02%  52.432us         1  52.432us  52.432us  52.432us  cuStreamCreate
+                    0.00%  12.226us         2  6.1130us     761ns  11.465us  cuModuleGetFunction
+                    0.00%  11.981us         1  11.981us  11.981us  11.981us  cuMemsetD32Async
+                    0.00%  11.274us         3  3.7580us  1.2020us  5.3010us  cuPointerGetAttributes
+                    0.00%  11.171us         3  3.7230us     616ns  9.1850us  cuCtxSetCurrent
+                    0.00%  4.0710us         3  1.3570us     380ns  3.1990us  cuDeviceGetCount
+                    0.00%  2.1420us         5     428ns     302ns     622ns  cuDeviceGetAttribute
+                    0.00%  1.8800us         1  1.8800us  1.8800us  1.8800us  cuCtxSynchronize
+                    0.00%  1.5170us         2     758ns     340ns  1.1770us  cuDeviceGet
+                    0.00%     558ns         1     558ns     558ns     558ns  cuDeviceComputeCapability
+                    0.00%     473ns         1     473ns     473ns     473ns  cuDriverGetVersion
+                    0.00%     383ns         1     383ns     383ns     383ns  cuCtxGetCurrent
+nvprof: /home/buildmeister/build/rel/gpgpu/toolkit/r9.0/nvprof/src/openacc/nvprof_openacc.c:341: push_openacc_activity_stack: Assertion `activity->start <= activity->end' failed.
+/var/spool/slurmd/job130267/slurm_script: línea 27: 16584 Abortado                (`core' generado) nvprof ./v11GPU 5
+
+==16601== NVPROF is profiling process 16601, command: ./v11GPU 5
+Failing in Thread:1
+Find shortest path for 250 cities. 5 Epochs. Population Size: 40000
+call to cuStreamSynchronize returned error 700: Illegal address during kernel execution
+
+==16601== Profiling application: ./v11GPU 5
+==16601== Warning: Found 2 invalid records in the result.
+==16601== Warning: This can happen if device ran out of memory or if a device kernel was stopped due to an assertion.
+==16601== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   93.64%  32.773us         2  16.386us  12.384us  20.389us  [CUDA memcpy HtoD]
+                    6.36%  2.2250us         1  2.2250us  2.2250us  2.2250us  [CUDA memset]
+      API calls:   84.02%  223.78ms         1  223.78ms  223.78ms  223.78ms  cuDevicePrimaryCtxRetain
+                   10.36%  27.595ms         1  27.595ms  27.595ms  27.595ms  cuMemHostAlloc
+                    4.15%  11.046ms         3  3.6821ms  5.1060us  11.032ms  cuStreamSynchronize
+                    0.73%  1.9448ms         5  388.95us  7.2070us  543.61us  cuMemAlloc
+                    0.57%  1.5152ms         1  1.5152ms  1.5152ms  1.5152ms  cuMemAllocHost
+                    0.09%  248.58us         1  248.58us  248.58us  248.58us  cuModuleLoadDataEx
+                    0.02%  61.717us         2  30.858us  15.578us  46.139us  cuLaunchKernel
+                    0.02%  57.250us         2  28.625us  19.274us  37.976us  cuMemcpyHtoDAsync
+                    0.02%  54.299us         1  54.299us  54.299us  54.299us  cuStreamCreate
+                    0.00%  11.889us         1  11.889us  11.889us  11.889us  cuMemsetD32Async
+                    0.00%  11.159us         3  3.7190us     594ns  9.1740us  cuCtxSetCurrent
+                    0.00%  10.173us         3  3.3910us  1.1510us  5.5110us  cuPointerGetAttributes
+                    0.00%  5.7710us         2  2.8850us     393ns  5.3780us  cuModuleGetFunction
+                    0.00%  4.4920us         3  1.4970us     377ns  3.5950us  cuDeviceGetCount
+                    0.00%  2.3350us         5     467ns     301ns     718ns  cuDeviceGetAttribute
+                    0.00%  1.7720us         1  1.7720us  1.7720us  1.7720us  cuCtxSynchronize
+                    0.00%  1.5370us         2     768ns     325ns  1.2120us  cuDeviceGet
+                    0.00%     628ns         1     628ns     628ns     628ns  cuCtxGetCurrent
+                    0.00%     608ns         1     608ns     608ns     608ns  cuDeviceComputeCapability
+                    0.00%     605ns         1     605ns     605ns     605ns  cuDriverGetVersion
+nvprof: /home/buildmeister/build/rel/gpgpu/toolkit/r9.0/nvprof/src/openacc/nvprof_openacc.c:341: push_openacc_activity_stack: Assertion `activity->start <= activity->end' failed.
+/var/spool/slurmd/job130267/slurm_script: línea 29: 16597 Abortado                (`core' generado) nvprof ./v11GPU 5
+
+==16614== NVPROF is profiling process 16614, command: ./v11GPU 1
+Failing in Thread:1
+Find shortest path for 250 cities. 1 Epochs. Population Size: 40000
+call to cuStreamSynchronize returned error 700: Illegal address during kernel execution
+
+==16614== Profiling application: ./v11GPU 1
+==16614== Warning: Found 2 invalid records in the result.
+==16614== Warning: This can happen if device ran out of memory or if a device kernel was stopped due to an assertion.
+==16614== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   95.01%  38.217us         2  19.108us  17.683us  20.534us  [CUDA memcpy HtoD]
+                    4.99%  2.0060us         1  2.0060us  2.0060us  2.0060us  [CUDA memset]
+      API calls:   87.41%  221.78ms         1  221.78ms  221.78ms  221.78ms  cuDevicePrimaryCtxRetain
+                    7.93%  20.122ms         1  20.122ms  20.122ms  20.122ms  cuMemHostAlloc
+                    3.57%  9.0556ms         3  3.0185ms  7.2580us  9.0310ms  cuStreamSynchronize
+                    0.57%  1.4543ms         5  290.86us  5.5900us  460.33us  cuMemAlloc
+                    0.38%  960.85us         1  960.85us  960.85us  960.85us  cuMemAllocHost
+                    0.06%  156.66us         1  156.66us  156.66us  156.66us  cuModuleLoadDataEx
+                    0.03%  63.442us         2  31.721us  27.203us  36.239us  cuMemcpyHtoDAsync
+                    0.02%  55.367us         2  27.683us  12.676us  42.691us  cuLaunchKernel
+                    0.01%  32.177us         1  32.177us  32.177us  32.177us  cuStreamCreate
+                    0.00%  10.907us         1  10.907us  10.907us  10.907us  cuMemsetD32Async
+                    0.00%  10.290us         2  5.1450us     269ns  10.021us  cuModuleGetFunction
+                    0.00%  9.6370us         3  3.2120us     972ns  5.1300us  cuPointerGetAttributes
+                    0.00%  7.8680us         3  2.6220us     450ns  6.5020us  cuCtxSetCurrent
+                    0.00%  4.6610us         3  1.5530us     415ns  3.7120us  cuDeviceGetCount
+                    0.00%  2.3750us         5     475ns     307ns     675ns  cuDeviceGetAttribute
+                    0.00%  1.7320us         2     866ns     365ns  1.3670us  cuDeviceGet
+                    0.00%  1.1040us         1  1.1040us  1.1040us  1.1040us  cuCtxSynchronize
+                    0.00%     650ns         1     650ns     650ns     650ns  cuCtxGetCurrent
+                    0.00%     638ns         1     638ns     638ns     638ns  cuDriverGetVersion
+                    0.00%     517ns         1     517ns     517ns     517ns  cuDeviceComputeCapability
+nvprof: /home/buildmeister/build/rel/gpgpu/toolkit/r9.0/nvprof/src/openacc/nvprof_openacc.c:341: push_openacc_activity_stack: Assertion `activity->start <= activity->end' failed.
+/var/spool/slurmd/job130267/slurm_script: línea 31: 16610 Abortado                (`core' generado) nvprof ./v11GPU 1
+

@@ -1,0 +1,30 @@
+#!/bin/bash -l
+#SBATCH -p cuda.q
+#SBATCH -w aomaster 
+#SBATCH --exclusive r
+
+
+echo "Run on computer:"
+hostname
+echo
+
+# next variable indicates GPU device number 
+export CUDA_VISIBLE_DEVICES=0
+
+# install CUDA profiling utilities
+module add pgi/20.7
+module list
+module add cuda/9.0
+module list
+export OMP_NUM_THREADS=4
+
+gcc -lm -O3 -g  -fopenmp  TSP_v7.c -o v7
+
+perf stat ./v7 500
+echo
+
+perf stat ./v7 500
+echo
+perf stat ./v7 500
+echo
+

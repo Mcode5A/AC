@@ -1,0 +1,31 @@
+#!/bin/bash -l
+#SBATCH --exclusive
+#SBATCH -t 1
+#SBATCH --partition=cuda.q
+
+echo "Identify node & Install PGI compiler"
+hostname
+export CUDA_VISIBLE_DEVICES=0
+#export PGI_ACC_DEBUG=1
+module add pgi/20.7
+module add cuda/9.0
+module list
+
+echo "Compiling code"
+
+
+pgcc -ta=tesla -Minfo=accel -fast TSP_v11.c -o v11GPU
+# gcc -static -fopenacc -lcuda -fopenmp -lm -g -O3  TSP_v11.c -o v11GPU
+
+echo "Execute & measure with perf"
+perf stat ./v11GPU 500
+echo 
+
+ 
+echo "Profile with nvprof: summary (100 iterations), trace (10 iterations), perf. metrics (1 iteration)"
+nvprof   ./v11GPU 5
+echo
+nvprof    ./v11GPU 5
+echo
+nvprof  ./v11GPU 1
+echo 
